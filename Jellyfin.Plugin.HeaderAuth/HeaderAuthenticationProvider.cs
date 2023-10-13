@@ -2,9 +2,11 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using Jellyfin.Data.Entities;
 using Jellyfin.Data.Enums;
+using MediaBrowser.Common;
 using MediaBrowser.Controller.Authentication;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Session;
+using MediaBrowser.Model.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +14,7 @@ namespace Jellyfin.Plugin.HeaderAuth;
 
 public class HeaderAuthenticationProviderPlugin : IAuthenticationProvider
     {
-        private readonly ILogger<LdapAuthenticationProviderPlugin> _logger;
+        private readonly ILogger<HeaderAuthenticationProviderPlugin> _logger;
         private readonly IApplicationHost _applicationHost;
         public HeaderAuthenticationProviderPlugin(IApplicationHost applicationHost, ILogger<HeaderAuthenticationProviderPlugin> logger)
         {

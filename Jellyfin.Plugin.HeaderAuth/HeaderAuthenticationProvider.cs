@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HeaderAuth;
 
-public class HeaderAuthenticationProviderPlugin : IAuthenticationProvider, IPasswordResetProvider
+public class HeaderAuthenticationProviderPlugin : IAuthenticationProvider
     {
         private readonly ILogger<LdapAuthenticationProviderPlugin> _logger;
         private readonly IApplicationHost _applicationHost;

@@ -10,55 +10,44 @@ using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HeaderAuth;
 
-[ApiController]
-[Route("[controller]")]
-public class AuthController : ControllerBase
-{
-    private readonly IUserManager _userManager;
-    private readonly ISessionManager _sessionManager;
-    private readonly ILogger<AuthController> _logger;
-
-    public AuthController(ILogger<AuthController> logger, ISessionManager sessionManager, IUserManager userManager)
+public class HeaderAuthenticationProviderPlugin : IAuthenticationProvider, IPasswordResetProvider
     {
-        _sessionManager = sessionManager;
-        _userManager = userManager;
-        _logger = logger;
-        _logger.LogInformation("Auth Controller initialized");
-    }
-
-    [HttpGet]
-    [Produces(MediaTypeNames.Application.Json)]
-    public async Task<ActionResult> Auth()
-    {
-        if (Request.Headers.TryGetValue(HeaderPlugin.Instance.Configuration.LoginHeader, out var headerUsername)) {
-            var authenticationResult = await Authenticate(headerUsername).ConfigureAwait(false);
-            return Ok(authenticationResult);
-        }
-
-        return BadRequest("Something went wrong");
-    }
-
-    private async Task<AuthenticationResult> Authenticate(string username)
-    {
-        User user = null;
-        user = _userManager.GetUserByName(username);
-
-        if (user == null)
+        private readonly ILogger<LdapAuthenticationProviderPlugin> _logger;
+        private readonly IApplicationHost _applicationHost;
+        public HeaderAuthenticationProviderPlugin(IApplicationHost applicationHost, ILogger<HeaderAuthenticationProviderPlugin> logger)
         {
-            _logger.LogInformation("Header user doesn't exist, creating...");
-            user = await _userManager.CreateUserAsync(username).ConfigureAwait(false);
-            user.SetPermission(PermissionKind.IsAdministrator, false);
-            user.SetPermission(PermissionKind.EnableAllFolders, true);
+            _logger = logger;
+            _applicationHost = applicationHost;
         }
 
-        user.AuthenticationProviderId = GetType().FullName;
-        await _userManager.UpdateUserAsync(user).ConfigureAwait(false);
+        public string Name => "Header-Authentication";
 
-        var authRequest = new AuthenticationRequest();
-        authRequest.UserId = user.Id;
-        authRequest.Username = user.Username;
-        _logger.LogInformation("Auth request created...");
+        public bool IsEnabled => true;
 
-        return await _sessionManager.AuthenticateNewSession(authRequest).ConfigureAwait(false);
-    }
-}
+        public async Task<ProviderAuthenticationResult> Authenticate()
+        {
+            if (Request.Headers.TryGetValue(HeaderPlugin.Instance.Configuration.LoginHeader, out var headerUsername))
+            {
+                User user = null;
+                user = _userManager.GetUserByName(username);
+
+                if (user == null)
+                {
+                    _logger.LogInformation("Header user doesn't exist, creating...");
+                    user = await _userManager.CreateUserAsync(username).ConfigureAwait(false);
+                    user.SetPermission(PermissionKind.IsAdministrator, false);
+                    user.SetPermission(PermissionKind.EnableAllFolders, true);
+                }
+
+                user.AuthenticationProviderId = GetType().FullName;
+                await _userManager.UpdateUserAsync(user).ConfigureAwait(false);
+
+                var authRequest = new AuthenticationRequest();
+                authRequest.UserId = user.Id;
+                authRequest.Username = user.Username;
+                _logger.LogInformation("Auth request created...");
+
+                return await _sessionManager.AuthenticateNewSession(authRequest).ConfigureAwait(false);
+            }
+            return BadRequest("Something went wrong");
+        }

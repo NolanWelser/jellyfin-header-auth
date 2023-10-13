@@ -51,3 +51,4 @@ public class HeaderAuthenticationProviderPlugin : IAuthenticationProvider, IPass
             }
             return BadRequest("Something went wrong");
         }
+    }

@@ -16,6 +16,8 @@ public class HeaderAuthenticationProviderPlugin : IAuthenticationProvider
     {
         private readonly ILogger<HeaderAuthenticationProviderPlugin> _logger;
         private readonly IApplicationHost _applicationHost;
+        private readonly IUserManager _userManager;
+        private readonly ISessionManager _sessionManager;
         public HeaderAuthenticationProviderPlugin(IApplicationHost applicationHost, ILogger<HeaderAuthenticationProviderPlugin> logger)
         {
             _logger = logger;

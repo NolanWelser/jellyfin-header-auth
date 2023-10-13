@@ -6,8 +6,8 @@ public class PluginConfiguration : BasePluginConfiguration
 {
     public PluginConfiguration()
     {
-        LoginHeader = "Tailscale-User-Login"
-        NameHeader = "Tailscale-User-Name"
+        LoginHeader = "Tailscale-User-Login";
+        NameHeader = "Tailscale-User-Name";
     }
 
     public string LoginHeader { set; get; }

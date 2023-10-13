@@ -51,4 +51,9 @@ public class HeaderAuthenticationProviderPlugin : IAuthenticationProvider, IPass
             }
             return BadRequest("Something went wrong");
         }
+
+        public bool HasPassword(User user)
+        {
+            return false;
+        }
     }

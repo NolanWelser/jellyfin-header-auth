@@ -58,4 +58,9 @@ public class HeaderAuthenticationProviderPlugin : IAuthenticationProvider
         {
             return false;
         }
+
+        public Task ChangePassword(User user, string newPassword)
+        {
+            return Task.CompletedTask;
+        }
     }

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>Jellyfin.Plugin.JellyfinHeaderAuth</RootNamespace>
+    <RootNamespace>Jellyfin.Plugin.HeaderAuth</RootNamespace>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>

@@ -8,7 +8,7 @@ using MediaBrowser.Controller.Session;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.JellyfinHeaderAuth.Api;
+namespace Jellyfin.Plugin.HeaderAuth;
 
 [ApiController]
 [Route("[controller]")]
@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
     [Produces(MediaTypeNames.Application.Json)]
     public async Task<ActionResult> Auth()
     {
-        if (Request.Headers.TryGetValue("X-Forwarded-UserName", out var headerUsername)) {
+        if (Request.Headers.TryGetValue(HeaderPlugin.Instance.Configuration.LoginHeader, out var headerUsername)) {
             var authenticationResult = await Authenticate(headerUsername).ConfigureAwait(false);
             return Ok(authenticationResult);
         }
@@ -48,7 +48,7 @@ public class AuthController : ControllerBase
             _logger.LogInformation("Header user doesn't exist, creating...");
             user = await _userManager.CreateUserAsync(username).ConfigureAwait(false);
             user.SetPermission(PermissionKind.IsAdministrator, false);
-            user.SetPermission(PermissionKind.EnableAllFolders, false);
+            user.SetPermission(PermissionKind.EnableAllFolders, true);
         }
 
         user.AuthenticationProviderId = GetType().FullName;

@@ -24,17 +24,17 @@ public class HeaderAuthenticationProviderPlugin : IAuthenticationProvider, IPass
 
         public bool IsEnabled => true;
 
-        public async Task<ProviderAuthenticationResult> Authenticate()
+        public async Task<ProviderAuthenticationResult> Authenticate(string username, string password)
         {
             if (Request.Headers.TryGetValue(HeaderPlugin.Instance.Configuration.LoginHeader, out var headerUsername))
             {
                 User user = null;
-                user = _userManager.GetUserByName(username);
+                user = _userManager.GetUserByName(headerUsername);
 
                 if (user == null)
                 {
                     _logger.LogInformation("Header user doesn't exist, creating...");
-                    user = await _userManager.CreateUserAsync(username).ConfigureAwait(false);
+                    user = await _userManager.CreateUserAsync(headerUsername).ConfigureAwait(false);
                     user.SetPermission(PermissionKind.IsAdministrator, false);
                     user.SetPermission(PermissionKind.EnableAllFolders, true);
                 }
